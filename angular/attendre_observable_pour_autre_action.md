@@ -2,8 +2,8 @@
 title: Attendre une action sur un observable pour faire une autre action
 description: 
 published: true
-date: 2020-04-29T10:48:49.502Z
-tags: typescript, développement, angular, observable, rxjs, promise
+date: 2020-04-29T10:48:52.575Z
+tags: 
 ---
 
 # ATTENDRE UNE ACTION SUR UN OBSERVABLE POUR FAIRE UNE AUTRE ACTION (PROMISE)

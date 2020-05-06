@@ -2,8 +2,8 @@
 title: Angular
 description: 
 published: true
-date: 2020-04-29T10:49:12.946Z
-tags: typescript, javascript, développement, web, angular
+date: 2020-04-29T10:49:16.021Z
+tags: 
 ---
 
 # INDEX ANGULAR
