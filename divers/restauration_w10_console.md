@@ -2,7 +2,7 @@
 title: Restauration de W10 depuis la console de récupération
 description: 
 published: true
-date: 2020-05-06T01:15:30.437Z
+date: 2020-05-06T11:27:50.553Z
 tags: windows, restauration, console
 ---
 
@@ -12,6 +12,7 @@ tags: windows, restauration, console
 > Après plusieurs Blue Screen, Windows entre en mode de Récupération automatique.
 > {.is-info}
 
+1. Choisir **Dépannage**
 1. Choisir **Options avancées**
 1. Choisir **Restauration du système**
 1. Choisir le point de restauration et valider
@@ -20,6 +21,7 @@ tags: windows, restauration, console
 > Si ça ne fonctionne pas (Erreur en lien avec la protection système...):
 > {.is-warning}
 
+1. Choisir **Dépannage**
 1. Choisir **Options avancées**
 1. Choisir **Invite de commandes**
 1. Entrer `rstrui /offline:C`
@@ -30,6 +32,7 @@ tags: windows, restauration, console
 > Si ça ne fonctionne pas, avec une erreur qui parle de registre:
 > {.is-danger}
 
+1. Choisir **Dépannage**
 1. Choisir **Options avancées**
 1. Choisir **Invite de commandes**
 1. Entrer `C:Windows\system32\config`
