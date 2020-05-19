@@ -1,8 +1,8 @@
 ---
-title: IIndex Style (CSS, SASS, ...)
+title: Index Style (CSS, SASS, ...)
 description: 
 published: true
-date: 2020-04-09T13:31:32.710Z
+date: 2020-05-19T22:10:34.087Z
 tags: 
 ---
 
@@ -10,4 +10,8 @@ tags:
 
 Index des pages concernant le style.
 
-* [Centrer un élément](/style/centrer_element)
+## CSS
+* ~~[Centrer un élément](/style/centrer_element)~~
+* [Centrer un élément (div)](/style/centrer_div)
+
+## SASS
