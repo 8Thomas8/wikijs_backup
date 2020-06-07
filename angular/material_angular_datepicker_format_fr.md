@@ -2,8 +2,8 @@
 title: Mettre en FR le format du datepicker d' Angular Material
 description: 
 published: true
-date: 2020-06-05T21:34:58.569Z
-tags: angular, material, datepicker
+date: 2020-06-05T21:35:01.722Z
+tags: 
 ---
 
 # METTRE EN FR LE FORMAT DU DATEPICKER D'ANGULAR MATERIAL
