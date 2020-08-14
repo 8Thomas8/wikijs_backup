@@ -2,7 +2,7 @@
 title: PWA: Le Service Worker
 description: 
 published: true
-date: 2020-08-14T10:44:25.200Z
+date: 2020-08-14T10:45:11.399Z
 tags: javascript, pwa, service worker
 editor: markdown
 ---
@@ -21,16 +21,7 @@ let urlsToCache = [
 
 // Clés du manifest.json pour récupérer le path des mêmes fichiers versionnés qui seront à mettre en cache pour un proket webpack.
 const filesToCache = [
-    // Fichiers CSS
-    'build/front/css/global.css',
-    'build/front/css/home.css',
-    'build/front/css/eligibilite-overlay.css',
-    'build/front/css/pwaElt.css',
-    // Fichiers JS
-    'build/front/runtime.js',
-    'build/front/pwaElt.js',
-    'build/front/js/global.js',
-    'build/front/js/home.js'
+		''
 ]
 
 console.log("SW: Chargement...");
