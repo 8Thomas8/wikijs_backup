@@ -2,12 +2,18 @@
 title: PWA: Le Service Worker
 description: 
 published: true
-date: 2020-08-14T10:45:11.399Z
+date: 2020-08-14T10:48:45.576Z
 tags: javascript, pwa, service worker
 editor: markdown
 ---
 
 # PWA: LE SERVICE WORKER
+
+Ce qui est important à gérer c'est la gestion du cache.
+L'autre chose très importante est la stratégie d'accès aux requetes:
+- Cache first
+- Network first
+- Race cache/network (le premier dispo sert le résultat)
 
 ```javascript
 // La version permet de gérer la gestion du cache en fonction de la version de Service Worker.
