@@ -2,7 +2,7 @@
 title: PWA: Le Service Worker
 description: 
 published: true
-date: 2020-08-14T10:48:45.576Z
+date: 2020-08-18T10:20:40.738Z
 tags: javascript, pwa, service worker
 editor: markdown
 ---
@@ -15,26 +15,30 @@ L'autre chose très importante est la stratégie d'accès aux requetes:
 - Network first
 - Race cache/network (le premier dispo sert le résultat)
 
+## Exemple service worker.
+Stratégie network first home made
 ```javascript
-// La version permet de gérer la gestion du cache en fonction de la version de Service Worker.
-const version = 'v0:0:1'
+// DEBUG mode
+const DEBUG_INSTALL = false;
+const DEBUG_ACTIVATE = false;
+const DEBUG_FETCH = true;
+const DEBUG_FETCH_NAV_IMG = false;
+
+// La VERSION permet de gérer la gestion du cache en fonction de la VERSION de Service Worker.
+const VERSION = 'v0:0:1';
+const CACHE_NAME = 'nomducache';
 
 // Path des fichiers statics à mettre en cache.
 let urlsToCache = [
-    // Pages
-    '/'
-]
-
-// Clés du manifest.json pour récupérer le path des mêmes fichiers versionnés qui seront à mettre en cache pour un proket webpack.
-const filesToCache = [
-		''
-]
-
-console.log("SW: Chargement...");
+    '/',
+    '/page1',
+    '/page2',
+    '/page3'
+];
 
 // Mise en cache des assets s'ils ne le sont pas déjà.
 const cacheAsset = (url) => {
-    return caches.open(version + 'fundamentals')
+    return caches.open(VERSION + CACHE_NAME)
         .then(cache => {
             const request = new Request(url);
             return cache.match(request)
@@ -58,15 +62,17 @@ const cacheAsset = (url) => {
 self.addEventListener("install", event => {
     let filesUrl = [];
 
-    console.log("SW : Installation en cours.");
+    DEBUG_INSTALL && console.group('SW : Install')
+    DEBUG_INSTALL && console.log("Installation en cours.");
 
     event.waitUntil(
         fetch('./build/front/manifest.json').then(resp => {
             resp.json()
                 .then((json) => {
-                    console.log('SW : Récupération des urls de fichier versionnés à cacher depuis le manifest.json.');
+                    DEBUG_INSTALL && console.log('Récupération des urls de fichier versionnés à cacher depuis' +
+                        ' le manifest.json du dossier front/');
                     Object.keys(json).forEach(key => {
-                        if (filesToCache.indexOf(key) !== -1) {
+                        if (json[key].includes('css') || json[key].includes('js')) {
                             filesUrl.push(json[key]);
                         }
                     })
@@ -74,10 +80,11 @@ self.addEventListener("install", event => {
                         urlsToCache = urlsToCache.concat(filesUrl);
                     });
                 }).then(() => {
-                console.log('SW : Mise en cache des fichiers statics + fichiers versionnés.');
+                DEBUG_INSTALL && console.log('Mise en cache des fichiers statics + fichiers versionnés.');
+                DEBUG_INSTALL && console.groupEnd();
+
                 Promise.all(
                     urlsToCache.map(url => cacheAsset(url)),
-                    console.log("SW : Installé."),
                     self.skipWaiting()
                 )
             });
@@ -87,9 +94,10 @@ self.addEventListener("install", event => {
 
 // Activation du service worker.
 self.addEventListener("activate", event => {
-    console.log("SW: Activation en cours.");
+    DEBUG_ACTIVATE && console.group('SW : Activate')
+    DEBUG_ACTIVATE && console.log("Activation en cours.");
 
-    // Suppression du cache si il ne correspond pas à la version du SW.
+    // Suppression du cache si il ne correspond pas à la VERSION du SW.
     event.waitUntil(
         caches
             .keys()
@@ -97,7 +105,7 @@ self.addEventListener("activate", event => {
                 return Promise.all(
                     keys
                         .filter(key => {
-                            return !key.startsWith(version)
+                            return !key.startsWith(VERSION)
                         })
                         .map(key => {
                             return caches.delete(key)
@@ -105,94 +113,99 @@ self.addEventListener("activate", event => {
                 );
             })
             .then(() => {
-                console.log('SW: Activé');
+                DEBUG_ACTIVATE && console.log('Activé');
+                DEBUG_ACTIVATE && console.groupEnd();
             })
     );
 });
-
-// Retourne une réponse pour les requêtes impossibles à joindre
-function unableToResolve() {
-    return new Response(
-        '<h1 style="text-align: center;">Service indisponible</h1>', {
-            status: 503,
-            statusText: 'Service Unavailable',
-            headers: new Headers({
-                'Content-Type': 'text/html'
-            })
-        });
-}
 
 // Interception des requêtes et application de la stratégie network first.
 self.addEventListener("fetch", event => {
 
     const req = event.request;
 
-    // Ignore les requêtes qui ne sont pas des GET.
-    if (req.method !== 'GET') {
-        console.log('SW Fetch: Récupération de la requête abandonné ( != \'GET\' )', req.url);
-        return;
-    }
-
-    // Ignore les requêtes qui sont hors site.
-    if (req.url.indexOf('degrouptest') < -1) {
-        console.log('SW Fetch: Récupération de la requête abandonné ( hors site )', req.url);
-        return;
-    }
-
-    // Ignore les requêtes qui ne sont pas de mode navigate.
-    if (req.mode !== 'navigate') {
-        console.log('SW Fetch : Récupération de la requête abandonné ( mode !== navigate )', req.url);
-        return;
+    // Ignore certaines requêtes:
+    // Vérifie si les requêtes ne sont pas dans urlToCache et si c'est le cas, si elles ne sont pas en mode navigate.
+    if (!urlsToCache.includes(req.url.replace('https://' + self.location.hostname, '')) && req.mode !== 'navigate') {
+        // Vérifie si les requêtes ne sont pas des images png, svg, jpg, gif.
+        if (!(req.url.endsWith('.png') || req.url.endsWith('.svg')
+            || req.url.endsWith('.jpg') || req.url.endsWith('.gif'))) {
+            DEBUG_FETCH_NAV_IMG && console.log('SW Fetch : Récupération de la requête abandonné ( mode !== navigate et ce n\'est pas une image )', req.url);
+            // Ignore la requête.
+            return;
+        }
     }
 
     event.respondWith(
         fetch(req)
             .then(
+                // Si réponse du network.
+                serveFromNetwork()
+            )
+            .catch(serveFromCache)
+    )
+
+    function serveFromNetwork() {
+        return response => {
+            // Clone la réponse pour l'utiliser une seconde fois.
+            let cacheCopy = response.clone();
+
+            // Enregistre la réponse clonée dans la cache.
+            caches
+                .open(VERSION + CACHE_NAME)
+                .then(
+                    cache => {
+                        cache.put(req, cacheCopy);
+                    }
+                )
+                .then(() => {
+                    DEBUG_FETCH && console.group('SW Fetch serveFromNetwork() : Requête', req.url);
+                    DEBUG_FETCH && console.log('Réponse récupérée online.');
+                    DEBUG_FETCH && console.log('Réponse online ajouté au cache.');
+                    DEBUG_FETCH && console.groupEnd();
+                });
+
+            // Sert la réponse obtenu online.
+            return response;
+        };
+    }
+
+    function serveFromCache() {
+        return caches.match(req)
+            .then(
+                // Réponse du cache.
                 response => {
-                    // Clone la réponse pour l'utiliser une seconde fois.
-                    let cacheCopy = response.clone();
+                    DEBUG_FETCH && console.group('SW Fetch serveFromCache() : Requête', req.url);
+                    DEBUG_FETCH && console.log('Impossible de récupérer la réponse online.', req.url);
 
-                    // Enregistre la réponse clonée dans la cache.
-                    caches
-                        .open(version + 'pages')
-                        .then(
-                            cache => {
-                                cache.put(req, cacheCopy);
-                            }
-                        )
-                        .then(() => {
-                            console.log('SW Fetch: Réponse récupéré online.', req.url);
-                            console.log('SW Fetch: Réponse online ajouté au cache.', req.url);
-                        });
+                    if (response) {
+                        DEBUG_FETCH && console.log('Récupération de la réponse depuis le cache');
+                        DEBUG_FETCH && console.groupEnd()
+                        return response;
+                    } else {
+                        DEBUG_FETCH && console.log('Impossible de récupérer la réponse depuis le cache');
+                        return unableToResolve();
+                    }
+                })
+            .catch(() => {
+                DEBUG_FETCH && console.log('Impossible de récupérer la réponse depuis online ou le cache');
+                return unableToResolve();
+            })
+    }
 
-                    // Sert la réponse obtenu online.
-                    return response;
-                },
-                // Fallback si pas de réponse online.
-                () => {
-                    console.log('SW Fetch : Impossible de récupérer la réponse online.', req.url);
-                    console.log('SW Fetch : Essai de récupération depuis le cache.', req.url);
-
-
-                    // Sert la réponse obtenue dans le cache.
-                    return caches.match(req)
-                        .then(
-                            // Réponse du cache.
-                            response => {
-                                if (response) {
-                                    console.log('SW Fetch : Récupération de la réponse depuis le cache', req.url);
-                                    return response;
-                                } else {
-                                    console.log('SW Fetch : Impossible de récupérer la réponse depuis le cache', req.url);
-                                    return unableToResolve();
-                                }
-                            })
-                        .catch(() => {
-                            console.log('SW Fetch : Impossible de récupérer la réponse depuis online ou le cache', req.url);
-                            return unableToResolve();
-                        })
-                }
-            ))
+    // Retourne une réponse pour les requêtes impossibles à joindre
+    function unableToResolve() {
+        DEBUG_FETCH && console.log('unableToResolve() déclenchée - erreur 503.')
+        DEBUG_FETCH && console.groupEnd();
+        return new Response(
+            '<h1 style="text-align: center;">Service indisponible</h1>', {
+                status: 503,
+                statusText: 'Service Unavailable',
+                headers: new Headers({
+                    'Content-Type': 'text/html'
+                })
+            });
+    }
 });
 
 ```
@@ -301,5 +314,79 @@ self.addEventListener("fetch", function(event) {
         }
       })
   );
+});
+```
+
+## Code utile pour le JS du site
+
+```javascript
+/*---------------------------------------------------------------------
+----------------------------- PWA -----------------------------------
+---------------------------------------------------------------------*/
+// Gestion du service worker et du block d'installation de la PWA.
+let showInstallPwa = true;
+
+// Lance l'enregistrement du service worker une fois le site chargé.
+window.addEventListener('load', e => {
+    if (mobileCheck(true)) {
+        swRegister();
+    }
+});
+
+// Vérification si navigateur mobile ou non. Retourne true si le navigateur est un navigateur mobile.
+// Force la valeur de retour en passant true en paramètre de la fonction.
+function mobileCheck(force = false) {
+    let check = false;
+    (function (a) {
+        if (/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(a) || /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0, 4))) check = true;
+    })(navigator.userAgent || navigator.vendor || window.opera);
+    return force ? force : check;
+}
+
+// Regarde si le navigateur est compatible avec les SW et lance appel le fichier.
+function swRegister() {
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker
+            .register('sw.js')
+            .then(() => {
+                console.log('SW: Installation terminée');
+            }).catch((error) => {
+            console.log('SW: Erreur d\'installation : ' + error);
+        });
+    }
+}
+
+// Déclaration stockage de l'event d'installation de la PWA
+let deferredPrompt;
+
+// Récupération de l'event prompt de l'installation.
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+
+    //On récupère l’évènement pour l'utiliser plus tard.
+    deferredPrompt = e;
+
+    // On lance la gestion de l'affichage du block d'installation de la PWA.
+    manageInstallBlock(showInstallPwa, observer);
+});
+
+// Installation au click sur le bouton #btnInstall.
+document.getElementById("btnInstall").addEventListener('click', (e) => {
+    // Affiche la demande d’installation
+    deferredPrompt.prompt();
+
+    deferredPrompt.userChoice.then((choiceResult) => {
+        if (choiceResult.outcome === 'accepted') {
+            console.log('PWA: Installation réussie');
+        } else {
+            console.log('PWA: Installation refusée');
+        }
+        deferredPrompt = null;
+
+        // On ferme le block d'installation de la PWA.
+        document.getElementById('installBlock').style.transform = 'translateY(60px)';
+        showInstallPwa = false;
+        manageInstallBlock(showInstallPwa, observer);
+    });
 });
 ```
