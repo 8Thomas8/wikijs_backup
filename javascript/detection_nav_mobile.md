@@ -2,9 +2,9 @@
 title: DÉTECTION DES NAVIGATEURS MOBILES
 description: 
 published: true
-date: 2020-08-18T09:02:00.633Z
-tags: javascript, développement, utilitaire, navigateur mobile
-editor: markdown
+date: 2020-08-18T09:02:05.524Z
+tags: 
+editor: undefined
 ---
 
 # DETECTION DES NAVIGATEURS MOBILES

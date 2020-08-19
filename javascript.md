@@ -2,9 +2,9 @@
 title: Index Javascript
 description: 
 published: true
-date: 2020-08-19T08:23:33.730Z
+date: 2020-08-19T08:23:38.816Z
 tags: 
-editor: markdown
+editor: undefined
 ---
 
 # Index Javascript

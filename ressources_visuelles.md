@@ -2,9 +2,9 @@
 title: Ressources Visuels
 description: 
 published: true
-date: 2020-08-19T08:20:12.757Z
-tags: image, front, visuel, icone, svg, png, jpg, dessin, vectoriel
-editor: markdown
+date: 2020-08-19T08:20:17.770Z
+tags: 
+editor: undefined
 ---
 
 # RESSOURCES - VISUELS

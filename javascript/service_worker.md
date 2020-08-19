@@ -2,9 +2,9 @@
 title: PWA: Le Service Worker
 description: 
 published: true
-date: 2020-08-18T10:20:40.738Z
-tags: javascript, pwa, service worker
-editor: markdown
+date: 2020-08-18T10:20:45.840Z
+tags: 
+editor: undefined
 ---
 
 # PWA: LE SERVICE WORKER
