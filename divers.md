@@ -2,14 +2,9 @@
 title: Divers
 description: 
 published: true
-<<<<<<< HEAD
 date: 2020-06-08T20:47:30.735Z
 tags: 
 editor: undefined
-=======
-date: 2020-06-08T20:37:28.622Z
-tags: divers
->>>>>>> 0acacff286497f9e891768325d8b837e0020dc2c
 ---
 
 # DIVERS

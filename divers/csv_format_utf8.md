@@ -4,10 +4,7 @@ description:
 published: true
 date: 2020-03-30T07:42:36.670Z
 tags: 
-<<<<<<< HEAD
 editor: undefined
-=======
->>>>>>> 0acacff286497f9e891768325d8b837e0020dc2c
 ---
 
 # FICHIER CSV - FORMATAGE UTF8 / BOM

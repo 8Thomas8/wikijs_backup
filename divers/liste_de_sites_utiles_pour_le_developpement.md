@@ -2,14 +2,9 @@
 title: Liste de sites utiles pour le développement
 description: 
 published: true
-<<<<<<< HEAD
 date: 2020-06-08T20:47:28.589Z
 tags: 
 editor: undefined
-=======
-date: 2020-06-08T20:47:25.302Z
-tags: développement, astuce, style, css, tips, sites utiles, frontend, design
->>>>>>> 0acacff286497f9e891768325d8b837e0020dc2c
 ---
 
 # LISTE DE SITES UTILES POUR LE DEVELOPPEMENT

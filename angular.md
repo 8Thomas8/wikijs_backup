@@ -4,10 +4,7 @@ description:
 published: true
 date: 2020-06-05T21:47:21.398Z
 tags: 
-<<<<<<< HEAD
 editor: undefined
-=======
->>>>>>> 0acacff286497f9e891768325d8b837e0020dc2c
 ---
 
 # INDEX ANGULAR

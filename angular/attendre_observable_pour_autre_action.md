@@ -4,10 +4,7 @@ description:
 published: true
 date: 2020-04-29T10:48:52.575Z
 tags: 
-<<<<<<< HEAD
 editor: undefined
-=======
->>>>>>> 0acacff286497f9e891768325d8b837e0020dc2c
 ---
 
 # ATTENDRE UNE ACTION SUR UN OBSERVABLE POUR FAIRE UNE AUTRE ACTION (PROMISE)

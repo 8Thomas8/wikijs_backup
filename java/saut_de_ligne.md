@@ -4,10 +4,7 @@ description:
 published: true
 date: 2020-02-21T11:05:10.703Z
 tags: 
-<<<<<<< HEAD
 editor: undefined
-=======
->>>>>>> 0acacff286497f9e891768325d8b837e0020dc2c
 ---
 
 # RECUPERER LE CARACTERE DE SAUT DE LIGNE

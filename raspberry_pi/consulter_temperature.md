@@ -4,10 +4,7 @@ description:
 published: true
 date: 2020-02-15T23:35:31.514Z
 tags: 
-<<<<<<< HEAD
 editor: undefined
-=======
->>>>>>> 0acacff286497f9e891768325d8b837e0020dc2c
 ---
 
 # CONSULTER LA TEMPERATURE DU RASPBERRY PI

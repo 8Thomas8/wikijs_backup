@@ -4,10 +4,7 @@ description:
 published: true
 date: 2020-02-15T23:41:46.229Z
 tags: 
-<<<<<<< HEAD
 editor: undefined
-=======
->>>>>>> 0acacff286497f9e891768325d8b837e0020dc2c
 ---
 
 # CREER L'UI D'UN PROGRAMME A L'AIDE DE QTDESIGNER
