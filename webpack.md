@@ -2,9 +2,9 @@
 title: Index Webpack
 description: 
 published: true
-date: 2020-08-21T07:46:07.187Z
-tags: javascript, développement, webpack
-editor: markdown
+date: 2020-08-21T07:46:12.106Z
+tags: 
+editor: undefined
 ---
 
 # INDEX WEBPACK
