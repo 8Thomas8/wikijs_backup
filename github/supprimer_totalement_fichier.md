@@ -4,7 +4,10 @@ description:
 published: true
 date: 2020-04-22T13:12:28.354Z
 tags: 
+<<<<<<< HEAD
 editor: undefined
+=======
+>>>>>>> 0acacff286497f9e891768325d8b837e0020dc2c
 ---
 
 # SUPPRIMER TOUTE TRACE D'UN FICHIER

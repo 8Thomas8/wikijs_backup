@@ -4,7 +4,10 @@ description:
 published: true
 date: 2020-05-17T21:13:14.547Z
 tags: 
+<<<<<<< HEAD
 editor: undefined
+=======
+>>>>>>> 0acacff286497f9e891768325d8b837e0020dc2c
 ---
 
 # CENTRER UNE DIV

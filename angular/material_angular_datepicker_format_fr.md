@@ -4,7 +4,10 @@ description:
 published: true
 date: 2020-06-05T21:35:01.722Z
 tags: 
+<<<<<<< HEAD
 editor: undefined
+=======
+>>>>>>> 0acacff286497f9e891768325d8b837e0020dc2c
 ---
 
 # METTRE EN FR LE FORMAT DU DATEPICKER D'ANGULAR MATERIAL
